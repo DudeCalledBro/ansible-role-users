@@ -1,0 +1,50 @@
+- name: "Setup {{ item.name }}"
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    comment: "{{ item.comment | default(omit, true) }}"
+    create_home: "{{ item.create_home | default(omit, true) }}"
+    expires: "{{ item.expires | default(omit, true) }}"
+    groups: "{{ item.groups | default(omit, true) }}"
+    home: "{{ item.home | default(omit, true) }}"
+    password_lock: "{{ item.password_lock | default(omit, true) }}"
+    password: "{{ item.password | default(omit, true) }}"
+    shell: "{{ item.shell | default(users_shell) }}"
+    state: "{{ item.state | default(omit, true) }}"
+    system: "{{ item.system | default(omit, true) }}"
+    uid: "{{ item.uid | default(omit, true) }}"
+    update_password: "{{ item.update_password | default(omit, true) }}"
+    append: "{{ item.append | default(omit, true) }}"
+  register: user_info
+
+- name: "Setup sudo for {{ item.name }}"
+  ansible.builtin.template:
+    src: sudo.j2
+    dest: "/etc/sudoers.d/{{ item.name }}"
+    owner: root
+    group: root
+    mode: 0640
+    validate: visudo -cf %s
+  when: item.sudo_config is defined and item.sudo_config | length
+
+- name: "Remove sudo for {{ item.name }}"
+  ansible.builtin.file:
+    path: "/etc/sudoers.d/{{ item.name }}"
+    state: absent
+  when: item.sudo_config is not defined or item.state == 'absent'
+
+- name: "Setup ~/.ssh directory for {{ item.name }}"
+  ansible.builtin.file:
+    path: "{{ user_info.home }}/.ssh"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+    state: directory
+    mode: 0700
+  when: item.ssh_key is defined and item.ssh_key | length
+
+- name: "Setup authorized keys for {{ item.name }}"
+  ansible.posix.authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.ssh_key }}"
+    exclusive: true
+    state: present
+  when: item.ssh_key is defined and item.ssh_key | length

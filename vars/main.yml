@@ -1,0 +1,5 @@
+_users_requirements:
+  default:
+  - cron
+  - sudo
+users_requirements: "{{ _users_requirements[ansible_os_family] | default(_users_requirements['default']) }}"

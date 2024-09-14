@@ -1,0 +1,20 @@
+# Define a list of users.
+users: []
+# - name: foo
+#   state: present
+#   groups: ansible0
+#   ssh_key: ""
+# - name: bar
+#   state: present
+#   sudo_config: "ALL=(ALL) NOPASSWD: ALL"
+
+# Define a list of groups.
+users_groups: []
+# - name: ansible0
+#   gid: 888
+# - name: ansible1
+#   gid: 999
+#   sudo_config: "ALL=(ALL) NOPASSWD: ALL"
+
+# Define default shell for new users.
+users_shell: /bin/bash

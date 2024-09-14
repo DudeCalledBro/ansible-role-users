@@ -1,0 +1,22 @@
+- name: "Setup group {{ item.name }}"
+  ansible.builtin.group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid | default(omit, true) }}"
+    state: "{{ item.state | default(omit, true) }}"
+    system: "{{ item.system | default(omit, true) }}"
+
+- name: "Setup sudo for group {{ item.name }}"
+  ansible.builtin.template:
+    src: sudo.j2
+    dest: "/etc/sudoers.d/{{ item.name }}"
+    owner: root
+    group: root
+    mode: 0640
+    validate: visudo -cf %s
+  when: item.sudo_config is defined and item.sudo_config | length
+
+- name: "Remove sudo for {{ item.name }}"
+  ansible.builtin.file:
+    path: "/etc/sudoers.d/{{ item.name }}"
+    state: absent
+  when: item.sudo_config is not defined

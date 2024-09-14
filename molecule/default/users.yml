@@ -1,0 +1,16 @@
+users:
+- name: molecule_user1
+  state: present
+  groups: molecule_group1
+- name: molecule_user2
+  state: present
+  groups: molecule_group2
+- name: molecule_user3
+  state: absent
+
+users_groups:
+- name: molecule_group1
+  state: present
+- name: molecule_group2
+  state: present
+  sudo_config: "ALL=(ALL) NOPASSWD: ALL"

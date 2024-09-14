@@ -1,0 +1,109 @@
+argument_specs:
+  main:
+    short_description: users
+    description: "Setup users and groups on linux systems."
+    author: dudecalledbro
+    options:
+      users:
+        type: list
+        elements: dict
+        required: false
+        options:
+          name:
+            type: str
+            required: true
+            description: "Name of the user to create, remove or modify."
+          comment:
+            type: str
+            required: false
+            description: "Optionally sets the description of user account."
+          create_home:
+            type: str
+            required: false
+            description: "Whether or not to create the home directory."
+          expires:
+            type: float
+            required: false
+            description: "An expiry time for the user in epoch, it will be ignored on platforms that do not support this."
+          groups:
+            type: list
+            elements: str
+            required: false
+            description: "A list of supplementary groups which the user is also a member of."
+          home:
+            type: str
+            required: false
+            description: "Optionally set the users home directory."
+          password_lock:
+            type: bool
+            required: false
+            description: "Lock the password."
+          password:
+            type: str
+            required: false
+            description: "If provided, set the userss password to the provided encrypted hash."
+          shell:
+            type: str
+            default: /bin/bash
+            description: "Optionally set the users shell."
+          state:
+            type: str
+            required: false
+            description: "Whether the account should exist or not, taking action if the state is different from what is stated."
+          system:
+            type: bool
+            required: false
+            description: "When creating an account state=present, setting this to true makes the user a system account."
+          uid:
+            type: int
+            required: false
+            description: "Optionally sets the UID of the user."
+          update_password:
+            type: str
+            required: false
+            description: "Update passwords if they differ."
+          append:
+            type: bool
+            required: false
+            description: "Add the user to the groups specified in groups."
+          sudo_config:
+            type: str
+            required: false
+            description: "Define sudo arguments for user."
+          ssh_key:
+            type: str
+            required: false
+            description: "The users SSH public key(s)."
+        description: "Define a list of users."
+
+      users_groups:
+        type: list
+        elements: dict
+        required: false
+        options:
+          name:
+            type: str
+            required: true
+            description: "Name of the group to manage."
+          gid:
+            type: int
+            required: false
+            description: "Optional GID to set for the group."
+          state:
+            type: str
+            required: false
+            description: "Whether the group should be present or not on the remote host."
+          system:
+            type: bool
+            required: false
+            description: "If yes, indicates that the group created is a system group."
+          sudo_config:
+            type: str
+            required: false
+            description: "Define sudo arguments for group."
+        description: "Define a list of groups."
+
+      users_shell:
+        type: str
+        default: /bin/bash
+        description: "Define default shell for new users."
